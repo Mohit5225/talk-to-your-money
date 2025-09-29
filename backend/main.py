@@ -3,9 +3,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Import the refactored DB logic and the new auth router
+# Import the refactored DB logic and the routers
 from mongo_db.db import database, lifespan
 from auth.auth import router as auth_router
+from app.api.router import router as prediction_router
 
 app = FastAPI(
     title="Talk To Your Money API",
@@ -23,6 +24,7 @@ app.add_middleware(
 )
 
 app.include_router(auth_router, prefix="/api") # Prefixed with /api for good practice
+app.include_router(prediction_router) # No prefix, so routes will be at root (/predict/AAPL)
 
 @app.get("/")
 async def root():

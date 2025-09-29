@@ -26,9 +26,9 @@ class PredictionService:
         """
         Fetches the LATEST data needed for a single prediction.
         """
-        # Fetch the last ~60 days to have enough data for a 30-day sequence
+        # Fetch the last ~120 days to ensure enough data for a 30-day sequence after cleaning
         end_date = pd.Timestamp.now().strftime('%Y-%m-%d')
-        start_date = (pd.Timestamp.now() - pd.DateOffset(days=60)).strftime('%Y-%m-%d')
+        start_date = (pd.Timestamp.now() - pd.DateOffset(days=120)).strftime('%Y-%m-%d')
         
         df = self.fetcher.fetch_data(symbol, start_date, end_date)
         df = df.dropna()
