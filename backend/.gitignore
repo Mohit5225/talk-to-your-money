@@ -1,1 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment
+.env
+
+# Virtual environment
 venv/
+
+# Models / large files (optional)
+models/saved/
