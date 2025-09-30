@@ -31,7 +31,7 @@
 
 .chatContainer {
   scrollbar-width: thin;
-  scrollbar-color: rgba(37, 99, 235, 0.4) transparent;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
 .chatContainer::-webkit-scrollbar {
@@ -43,6 +43,6 @@
 }
 
 .chatContainer::-webkit-scrollbar-thumb {
-  background-color: rgba(37, 99, 235, 0.4);
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 20px;
 }

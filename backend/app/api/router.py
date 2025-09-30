@@ -1,8 +1,8 @@
 # app/api/router.py
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from pathlib import Path
+from typing import Optional
 import pandas as pd
-import numpy as np
 from .prediction_service import PredictionService
 
 # This dictionary will hold our loaded service
@@ -40,11 +40,12 @@ def initialize_prediction_service():
         print(f"❌ Error initializing prediction service: {str(e)}")
 
 
-@router.post("/predict/{symbol}")
+
 @router.get("/predict/{symbol}")
-async def get_prediction(symbol: str):
+async def get_prediction(symbol: str, date: Optional[str] = Query(default=None, description="Target date in YYYY-MM-DD format")):
     """
-    Endpoint to get stock prediction for a given symbol
+    Endpoint to get stock prediction for a given symbol.
+    If date is not provided, it will use the current date.
     """
     if not ml_models.get("stock_predictor"):
         initialize_prediction_service()
@@ -58,10 +59,24 @@ async def get_prediction(symbol: str):
     if symbol not in predictor.config.data.stock_identifier_mapping:
         raise HTTPException(status_code=404, detail=f"Stock symbol '{symbol}' not supported.")
 
+    # Parse and standardize the requested date (if provided)
+    target_date_iso: Optional[str] = None
+    if date:
+        try:
+            parsed_date = pd.to_datetime(date)
+            # Normalize and drop timezone info for consistent downstream usage
+            parsed_date = parsed_date.tz_localize(None).normalize()
+            target_date_iso = parsed_date.strftime('%Y-%m-%d')
+        except (ValueError, TypeError):
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid date format. Please use YYYY-MM-DD."
+            )
+
     try:
         try:
             # Make the prediction - this internally calls _prepare_inference_data
-            prediction = predictor.predict(symbol)
+            prediction, resolved_date = predictor.predict(symbol, target_date_iso)
             
             # Extract and format values for response
             return {
@@ -69,7 +84,7 @@ async def get_prediction(symbol: str):
                 "high": float(prediction[0][0]),
                 "low": float(prediction[0][1]),
                 "close": float(prediction[0][2]),
-                "date": pd.Timestamp.now().strftime('%Y-%m-%d')
+                "date": resolved_date
             }
         except ValueError as ve:
             # Handle specific value errors like not enough data

@@ -2,13 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { MessageCircle, X } from 'lucide-react';
-import { useRouter, usePathname } from 'next/navigation';
+import { MessageCircle } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export default function FloatingChatButton() {
   const [isVisible, setIsVisible] = useState(true);
   const pathname = usePathname();
-  const router = useRouter();
   
   // Hide button when on the chatbot page
   useEffect(() => {

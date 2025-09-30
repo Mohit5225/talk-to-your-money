@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface PredictionResult {
   symbol: string;
@@ -21,10 +21,10 @@ interface Stock {
 
 // Stock Prediction Page
 export default function StockPredictions() {
-  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [prediction, setPrediction] = useState<PredictionResult | null>(null)
   const [error, setError] = useState('')
+  const [targetDate, setTargetDate] = useState('')
   
   const stocks: Stock[] = [
     {
@@ -35,14 +35,22 @@ export default function StockPredictions() {
     }
   ]
 
-  const handlePredictionRequest = async (symbol: string) => {
+  const normalizedDate = useMemo(() => targetDate.trim(), [targetDate])
+
+  const handlePredictionRequest = async (symbol: string, requestedDate?: string) => {
     setLoading(true)
     setPrediction(null)
     setError('')
     
     try {
+      const dateToUse = (requestedDate ?? normalizedDate)
+      const url = new URL(`http://localhost:8000/predict/${symbol}`)
+      if (dateToUse) {
+        url.searchParams.set('date', dateToUse)
+      }
+
       // Make API call to your backend
-      const response = await fetch(`http://localhost:8000/predict/${symbol}`, {
+      const response = await fetch(url.toString(), {
         method: 'GET',  // Changed to GET for compatibility
         headers: {
           'Content-Type': 'application/json'
@@ -74,6 +82,22 @@ export default function StockPredictions() {
       
       <h1 className="text-3xl font-bold mb-6 text-amber-200 drop-shadow">Stock Predictions</h1>
       
+      <div className="mb-8 bg-indigo-900/60 border border-indigo-700 rounded-xl p-6 shadow-lg backdrop-blur">
+        <h2 className="text-xl font-semibold mb-3 text-amber-200">Choose a prediction date</h2>
+        <p className="text-sm text-cyan-100 mb-4">Pick a target date for your forecast. Leave it empty to use today.</p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <label htmlFor="target-date" className="text-sm font-medium text-cyan-200">Prediction date</label>
+          <input
+            id="target-date"
+            type="date"
+            value={targetDate}
+            onChange={(event) => setTargetDate(event.target.value)}
+            className="bg-blue-950/60 border border-cyan-400/50 rounded-md px-3 py-2 text-sky-50 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent transition-colors"
+          />
+        </div>
+        <p className="text-xs text-cyan-200 mt-3">Now pick a stock card below to fetch the prediction for that day.</p>
+      </div>
+
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4 text-cyan-200">Select a Stock</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -85,12 +109,14 @@ export default function StockPredictions() {
             >
               <div className="flex items-center mb-4">
                 {stock.logo && (
-                  <img 
-                    src={stock.logo} 
-                    alt={stock.name} 
-                    className="w-8 h-8 mr-3 rounded-full"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none'
+                  <Image
+                    src={stock.logo}
+                    alt={stock.name}
+                    width={32}
+                    height={32}
+                    className="mr-3 h-8 w-8 rounded-full object-cover"
+                    onError={(event) => {
+                      event.currentTarget.classList.add('hidden')
                     }}
                   />
                 )}
@@ -131,6 +157,14 @@ export default function StockPredictions() {
       {prediction && (
         <div className="bg-indigo-900/80 border border-indigo-700 rounded-xl shadow-xl p-6 backdrop-blur">
           <h2 className="text-2xl font-bold mb-4 text-amber-200">Prediction Results</h2>
+          <div className="mb-5 text-sm text-cyan-100">
+            <span className="text-cyan-200">Reference date:</span>{' '}
+            <span className="font-semibold text-amber-200">
+              {prediction.date
+                ? new Date(`${prediction.date}T00:00:00Z`).toLocaleDateString()
+                : new Date().toLocaleDateString()}
+            </span>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-emerald-700/40 border border-emerald-400/60 p-4 rounded-lg">
               <h3 className="text-lg font-medium text-emerald-200 mb-2">High</h3>
@@ -147,7 +181,6 @@ export default function StockPredictions() {
           </div>
           <div className="mt-6 text-sm text-cyan-100">
             <p>Prediction for {stocks.find(s => s.symbol === prediction.symbol)?.name || prediction.symbol}</p>
-            <p className="mt-1">Date: {new Date().toLocaleDateString()}</p>
           </div>
         </div>
       )}

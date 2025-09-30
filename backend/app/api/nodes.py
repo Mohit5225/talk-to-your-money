@@ -39,11 +39,15 @@ async def get_prediction_node(state: AgentState):
     # Retrieve the pre-loaded service object and symbol from the agent's memory.
     service_instance = state["prediction_service"]
     symbol = state["symbol"]
+    target_date = state.get("date_for_prediction")
+    if target_date in {None, "", "UNKNOWN"}:
+        target_date = None
 
     try:
         # This is the direct Python function call to our loaded model service. NO HTTP.
-        prediction_result = service_instance.predict(symbol)
+        prediction_result, resolved_date = service_instance.predict(symbol, target_date)
         state["prediction_data"] = prediction_result
+        state["date_for_prediction"] = resolved_date
         logger.info(f"Successfully ran prediction model for {symbol}")
     except Exception as e:
         logger.error(f"Error during model prediction for {symbol}: {e}")

@@ -25,7 +25,7 @@ class DataFetcher:
         """Fetch data for a given symbol and date range."""
         # Fetch data based on API source
         if self.config.api_source == "yahoo":
-            df = yf.download(symbol, start=start_date, end=end_date)
+            df = yf.download(symbol, start=start_date, end=end_date , auto_adjust=True,  progress=False)
             print(f"Downloaded for {symbol}: shape={df.shape}, columns={df.columns}")
             if isinstance(df.columns, pd.MultiIndex):
                 df.columns = [col[0] for col in df.columns]

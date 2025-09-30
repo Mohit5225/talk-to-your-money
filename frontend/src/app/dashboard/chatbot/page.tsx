@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { Send, Bot, User } from 'lucide-react'
 import styles from './chatbot.module.css'
 import { sendMessage, ChatMessage } from '@/app/services/chatbot'
