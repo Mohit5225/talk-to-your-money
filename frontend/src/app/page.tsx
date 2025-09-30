@@ -5,12 +5,12 @@ import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/nextjs'
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-100 p-6">
-      <div className="max-w-lg w-full text-center bg-white/70 backdrop-blur-md shadow-2xl rounded-2xl p-10">
-        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent mb-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-950 via-indigo-900 to-purple-900 p-6">
+      <div className="max-w-lg w-full text-center bg-indigo-900/80 backdrop-blur-md shadow-2xl rounded-2xl p-10 border border-indigo-700">
+        <h1 className="text-5xl font-extrabold bg-gradient-to-r from-amber-300 via-rose-300 to-cyan-200 bg-clip-text text-transparent mb-4">
           Talk To Your Money
         </h1>
-        <p className="text-lg text-gray-700 mb-10">
+        <p className="text-lg text-sky-100 mb-10">
           AI-powered financial insights and stock predictions, designed for clarity and confidence.
         </p>
 

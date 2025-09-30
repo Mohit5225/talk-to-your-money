@@ -1,0 +1,48 @@
+/* Chatbot animations */
+@keyframes typing {
+  0% { opacity: 0.3; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-3px); }
+  100% { opacity: 0.3; transform: translateY(0); }
+}
+
+.typingDot:nth-child(1) {
+  animation: typing 1s infinite;
+  animation-delay: 0ms;
+}
+
+.typingDot:nth-child(2) {
+  animation: typing 1s infinite; 
+  animation-delay: 150ms;
+}
+
+.typingDot:nth-child(3) {
+  animation: typing 1s infinite;
+  animation-delay: 300ms;
+}
+
+.messageIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chatContainer {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(37, 99, 235, 0.4) transparent;
+}
+
+.chatContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chatContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chatContainer::-webkit-scrollbar-thumb {
+  background-color: rgba(37, 99, 235, 0.4);
+  border-radius: 20px;
+}
