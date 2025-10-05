@@ -5,6 +5,7 @@ from pathlib import Path
 from .prediction_service import PredictionService
 import numpy as np
 import pandas as pd
+from .router import router as prediction_router
 
 # This dictionary will hold our loaded service
 
@@ -19,7 +20,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+app.include_router(prediction_router)
 @app.get("/")
 def read_root():
     return {"message": "Grumpy's Stock Prediction API is awake. Now what?"}

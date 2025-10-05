@@ -32,8 +32,38 @@ export default function StockPredictions() {
       name: 'Apple Inc.',
       logo: 'https://logo.clearbit.com/apple.com',
       color: 'bg-gradient-to-r from-indigo-800 via-blue-700 to-cyan-600'
+    },
+     {
+      symbol: 'MSFT',
+      name: 'Microsoft Corporation',
+      logo: 'https://logo.clearbit.com/microsoft.com',
+      color: 'bg-gradient-to-r from-green-800 via-teal-700 to-cyan-600'
+    },
+    {
+      symbol: 'NVDA',
+      name: 'NVIDIA Corporation',
+      logo: 'https://logo.clearbit.com/nvidia.com',
+      color: 'bg-gradient-to-r from-purple-800 via-indigo-700 to-blue-600'
+    },
+       {
+      symbol: 'GOOGL',
+      name: 'Alphabet Inc.',
+      logo: 'https://logo.clearbit.com/google.com',
+      color: 'bg-gradient-to-r from-blue-800 via-cyan-700 to-teal-600'
+    },
+    {
+      symbol: 'AMD',
+      name: 'Advanced Micro Devices Inc.',
+      logo: 'https://logo.clearbit.com/amd.com',
+      color: 'bg-gradient-to-r from-orange-800 via-red-700 to-pink-600'
+    },
+    {
+      symbol: 'META',
+      name: 'Meta Platforms Inc.',
+      logo: 'https://logo.clearbit.com/meta.com',
+      color: 'bg-gradient-to-r from-purple-800 via-pink-700 to-indigo-600'
     }
-  ]
+  ];
 
   const normalizedDate = useMemo(() => targetDate.trim(), [targetDate])
 

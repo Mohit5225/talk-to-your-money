@@ -1,4 +1,7 @@
 # api/prediction_service.py
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 import pickle
 from pathlib import Path
 from typing import Optional, Tuple, Union
@@ -25,37 +28,71 @@ class PredictionService:
         self.fetcher = DataFetcher(self.config.data)
         print("✅ PredictionService initialized. Model and scalers are loaded.")
 
-    def _prepare_inference_data(self, symbol: str, target_ts: pd.Timestamp) -> dict:
+    def _prepare_inference_data(self, symbol: str, target_ts: pd.Timestamp, debug: bool = False) -> dict:
         """
-        Fetches the LATEST data needed for a single prediction.
+        Robust data preparation for inference:
+        - Fetches a sufficiently large window
+        - Removes any rows for the target day or after (ensures we only use historical data)
+        - Selects the final `time_steps` rows to feed the model
         """
         normalized_target = target_ts.normalize()
 
-        # Fetch the last ~120 days to ensure enough data for a 30-day sequence after cleaning
+        # Fetch a generous window (120 days back is fine)
         fetch_end_date = (normalized_target + pd.DateOffset(days=1)).strftime('%Y-%m-%d')
         start_date = (normalized_target - pd.DateOffset(days=120)).strftime('%Y-%m-%d')
-        
+
         df = self.fetcher.fetch_data(symbol, start_date, fetch_end_date)
         df = df.dropna()
-        
-        # We only need the last `time_steps` worth of data
-        if len(df) < self.config.data.time_steps:
-            raise ValueError(f"Not enough recent data for {symbol} to make a prediction.")
-        
-        # Get feature names and slice the dataframe
+
+        # Ensure DateTimeIndex and normalize index to date-only for reliable comparison
+        if not isinstance(df.index, pd.DatetimeIndex):
+            df.index = pd.to_datetime(df.index)
+        df.index = df.index.tz_localize(None).normalize()
+
+        # IMPORTANT: exclude any rows >= target date so input is strictly historical
+        df_hist = df[df.index < normalized_target]
+
+        if debug:
+            print(f"DEBUG: fetched df index min/max: {df.index.min()} / {df.index.max()}")
+            print(f"DEBUG: filtered df_hist index min/max: {df_hist.index.min()} / {df_hist.index.max()}")
+            print(f"DEBUG: rows fetched: {len(df)}  rows after filter: {len(df_hist)}")
+
+        if len(df_hist) < self.config.data.time_steps:
+            raise ValueError(
+                f"Not enough historical rows strictly before {normalized_target.date()} for {symbol} "
+                f"(need {self.config.data.time_steps}, got {len(df_hist)})"
+            )
+
+        # Select the most recent time_steps rows
         feature_names = self.config.data.get_active_features
-        features_df = df[feature_names].tail(self.config.data.time_steps)
-        
-        # IMPORTANT: Use the LOADED scaler to TRANSFORM the new data
-        scaled_features = self.feature_scaler.transform(features_df)
-        
-        # The model expects a batch dimension, so add one
-        price_input = np.expand_dims(scaled_features, axis=0)
-        
-        # Get the stock ID for the embedding layer
+        features_df = df_hist[feature_names].tail(self.config.data.time_steps)
+
+        # Sanity checks: column order and shape should match scaler expectation
+        # If your scaler was fit with a specific column order, ensure it's the same here.
+        if hasattr(self.feature_scaler, "feature_names_in_"):
+            expected_cols = list(self.feature_scaler.feature_names_in_)
+            if list(features_df.columns) != expected_cols:
+                # reorder if possible, otherwise raise to catch silent misalignment
+                try:
+                    features_df = features_df[expected_cols]
+                except Exception:
+                    raise RuntimeError("Feature columns do not match scaler feature_names_in_ and cannot be reordered.")
+
+        # Scale and reshape for model input
+        scaled_features = self.feature_scaler.transform(features_df.values)
+        price_input = np.expand_dims(scaled_features, axis=0)  # shape (1, time_steps, n_features)
+
+        # Stock id input remains the same
         stock_id = self.config.data.stock_identifier_mapping[symbol]
         stock_input = np.array([[stock_id]])
-        
+
+        if debug:
+            print("DEBUG: features_df.index ->", features_df.index)
+            print("DEBUG: features_df.head(1)->\n", features_df.head(1))
+            print("DEBUG: scaled_features.shape ->", scaled_features.shape)
+            print("DEBUG: price_input.shape ->", price_input.shape)
+            print("DEBUG: stock_input ->", stock_input)
+
         return {
             'price_input': price_input,
             'stock_input': stock_input
@@ -98,6 +135,11 @@ class PredictionService:
         dummy_array[:, :self.config.model.output_dim] = scaled_prediction
 
         real_prediction = self.target_scaler.inverse_transform(dummy_array)
+
+    
+        
+       
+      
 
         # Return only the relevant columns (High, Low, Close)
         return real_prediction[:, :self.config.model.output_dim], target_date_iso

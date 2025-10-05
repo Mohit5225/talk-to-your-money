@@ -1,7 +1,14 @@
 # File: main.py
 
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+# Configure basic logging so module-level logger.info() calls are visible
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 
 # Import the refactored DB logic and the routers
 from mongo_db.db import database, lifespan

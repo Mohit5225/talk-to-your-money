@@ -1,5 +1,8 @@
 # app/api/router.py
 from fastapi import APIRouter, HTTPException, Query
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 from pathlib import Path
 from typing import Optional
 import pandas as pd
@@ -40,7 +43,7 @@ def initialize_prediction_service():
         print(f"❌ Error initializing prediction service: {str(e)}")
 
 
-
+@router.post("/predict/{symbol}")
 @router.get("/predict/{symbol}")
 async def get_prediction(symbol: str, date: Optional[str] = Query(default=None, description="Target date in YYYY-MM-DD format")):
     """
@@ -75,15 +78,37 @@ async def get_prediction(symbol: str, date: Optional[str] = Query(default=None, 
 
     try:
         try:
+            # Log prediction request
+            logger.info("\n" + "="*60)
+            logger.info(f"📊 PREDICTING FOR {symbol} | Target Date: {target_date_iso or 'TODAY'}")
+            logger.info("="*60)
+            
             # Make the prediction - this internally calls _prepare_inference_data
             prediction, resolved_date = predictor.predict(symbol, target_date_iso)
             
+            # Extract numeric values
+            high_v = float(prediction[0][0])
+            low_v = float(prediction[0][1])
+            close_v = float(prediction[0][2])
+
+            # Log prediction results in clean format
+            logger.info(f"\n✅ PREDICTION RESULTS:")
+            logger.info(f"🤖 Model Raw Output (Absolute Values):")
+            logger.info(f"   Symbol: {symbol}")
+            logger.info(f"   Date:   {resolved_date}")
+            logger.info(f"   📈 High:  ${high_v:.2f}")
+            logger.info(f"   📉 Low:   ${low_v:.2f}")
+            logger.info(f"   💰 Close: ${close_v:.2f}")
+            logger.info("="*60 + "\n")
+            
+
             # Extract and format values for response
             return {
+                 
                 "symbol": symbol,
-                "high": float(prediction[0][0]),
-                "low": float(prediction[0][1]),
-                "close": float(prediction[0][2]),
+                "high": high_v,
+                "low": low_v,
+                "close": close_v,
                 "date": resolved_date
             }
         except ValueError as ve:

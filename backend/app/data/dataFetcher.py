@@ -26,7 +26,11 @@ class DataFetcher:
         # Fetch data based on API source
         if self.config.api_source == "yahoo":
             df = yf.download(symbol, start=start_date, end=end_date , auto_adjust=True,  progress=False)
-            print(f"Downloaded for {symbol}: shape={df.shape}, columns={df.columns}")
+            
+            # Log clean data fetch info
+            col_names = [col[0] if isinstance(df.columns, pd.MultiIndex) else col for col in df.columns]
+            logger.info(f"📥 Fetched {symbol} data: {df.shape[0]} rows, columns={col_names}")
+            
             if isinstance(df.columns, pd.MultiIndex):
                 df.columns = [col[0] for col in df.columns]
         elif self.config.api_source == "alphavantage":
@@ -64,5 +68,4 @@ class DataFetcher:
         active_features = self.config.get_active_features
         df = df[active_features]
 
-        logger.info(f"Fetched data for {symbol}: {len(df)} rows, {len(df.columns)} columns.")
         return df
