@@ -31,37 +31,37 @@ export default function StockPredictions() {
       symbol: 'AAPL',
       name: 'Apple Inc.',
       logo: 'https://logo.clearbit.com/apple.com',
-      color: 'bg-gradient-to-r from-indigo-800 via-blue-700 to-cyan-600'
+      color: 'bg-gradient-to-r from-[#110f24] via-[#191238] to-[#25175a]'
     },
-     {
+    {
       symbol: 'MSFT',
       name: 'Microsoft Corporation',
       logo: 'https://logo.clearbit.com/microsoft.com',
-      color: 'bg-gradient-to-r from-green-800 via-teal-700 to-cyan-600'
+      color: 'bg-gradient-to-r from-[#121028] via-[#1c1a43] to-[#2b1f5a]'
     },
     {
       symbol: 'NVDA',
       name: 'NVIDIA Corporation',
       logo: 'https://logo.clearbit.com/nvidia.com',
-      color: 'bg-gradient-to-r from-purple-800 via-indigo-700 to-blue-600'
+      color: 'bg-gradient-to-r from-[#0f1628] via-[#1a2748] to-[#243664]'
     },
-       {
+    {
       symbol: 'GOOGL',
       name: 'Alphabet Inc.',
       logo: 'https://logo.clearbit.com/google.com',
-      color: 'bg-gradient-to-r from-blue-800 via-cyan-700 to-teal-600'
+      color: 'bg-gradient-to-r from-[#11152a] via-[#202358] to-[#2d3174]'
     },
     {
       symbol: 'AMD',
       name: 'Advanced Micro Devices Inc.',
       logo: 'https://logo.clearbit.com/amd.com',
-      color: 'bg-gradient-to-r from-orange-800 via-red-700 to-pink-600'
+      color: 'bg-gradient-to-r from-[#12162d] via-[#222456] to-[#303072]'
     },
     {
       symbol: 'META',
       name: 'Meta Platforms Inc.',
       logo: 'https://logo.clearbit.com/meta.com',
-      color: 'bg-gradient-to-r from-purple-800 via-pink-700 to-indigo-600'
+      color: 'bg-gradient-to-r from-[#10162b] via-[#262b5a] to-[#333874]'
     }
   ];
 
@@ -103,38 +103,38 @@ export default function StockPredictions() {
   }
   
   return (
-    <div className="p-8 text-sky-100">
+    <div className="p-8 text-[var(--foreground)]">
       <div className="mb-6">
-        <Link href="/dashboard" className="text-cyan-300 hover:text-amber-200 transition-colors flex items-center">
+        <Link href="/dashboard" className="text-[var(--accent)] hover:text-[#ff5c8f] transition-colors flex items-center">
           ← Back to Dashboard
         </Link>
       </div>
       
-      <h1 className="text-3xl font-bold mb-6 text-amber-200 drop-shadow">Stock Predictions</h1>
+      <h1 className="text-3xl font-bold mb-6 text-[#f1eeff] drop-shadow-[0_0_18px_rgba(123,91,255,0.28)]">Stock Predictions</h1>
       
-      <div className="mb-8 bg-indigo-900/60 border border-indigo-700 rounded-xl p-6 shadow-lg backdrop-blur">
-        <h2 className="text-xl font-semibold mb-3 text-amber-200">Choose a prediction date</h2>
-        <p className="text-sm text-cyan-100 mb-4">Pick a target date for your forecast. Leave it empty to use today.</p>
+  <div className="mb-8 bg-gradient-to-br from-[#0b0a1d] to-[#141238] border border-[#221f46] rounded-xl p-6 shadow-[0_0_30px_rgba(64,55,255,0.22)] backdrop-blur">
+        <h2 className="text-xl font-semibold mb-3 text-[var(--accent-secondary)]">Choose a prediction date</h2>
+        <p className="text-sm text-[#c8cdfd] mb-4">Pick a target date for your forecast. Leave it empty to use today.</p>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <label htmlFor="target-date" className="text-sm font-medium text-cyan-200">Prediction date</label>
+          <label htmlFor="target-date" className="text-sm font-medium text-[#e6e9ff]/80">Prediction date</label>
           <input
             id="target-date"
             type="date"
             value={targetDate}
             onChange={(event) => setTargetDate(event.target.value)}
-            className="bg-blue-950/60 border border-cyan-400/50 rounded-md px-3 py-2 text-sky-50 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:border-transparent transition-colors"
+            className="bg-[#121531]/70 border border-[var(--accent)]/35 rounded-md px-3 py-2 text-[var(--foreground)] placeholder-[#c8cdfd]/60 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent transition-colors"
           />
         </div>
-        <p className="text-xs text-cyan-200 mt-3">Now pick a stock card below to fetch the prediction for that day.</p>
+        <p className="text-xs text-[#c8cdfd] mt-3">Now pick a stock card below to fetch the prediction for that day.</p>
       </div>
 
       <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4 text-cyan-200">Select a Stock</h2>
+        <h2 className="text-xl font-semibold mb-4 text-[var(--accent-secondary)]">Select a Stock</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {stocks.map((stock) => (
             <div 
               key={stock.symbol}
-              className={`${stock.color} p-6 rounded-xl shadow-lg cursor-pointer transform transition-transform hover:scale-105 hover:shadow-2xl border border-cyan-400/40`}
+              className={`${stock.color} p-6 rounded-xl shadow-[0_0_26px_rgba(64,55,255,0.24)] cursor-pointer transform transition-transform hover:scale-105 hover:shadow-[0_0_38px_rgba(64,55,255,0.32)] border border-[var(--accent-secondary)]/25`}
               onClick={() => handlePredictionRequest(stock.symbol)}
             >
               <div className="flex items-center mb-4">
@@ -144,20 +144,20 @@ export default function StockPredictions() {
                     alt={stock.name}
                     width={32}
                     height={32}
-                    className="mr-3 h-8 w-8 rounded-full object-cover"
+                    className="mr-3 h-8 w-8 rounded-full object-cover border border-white/20"
                     onError={(event) => {
                       event.currentTarget.classList.add('hidden')
                     }}
                   />
                 )}
-                <h3 className="text-lg font-semibold text-white drop-shadow">{stock.name}</h3>
+                <h3 className="text-lg font-semibold text-[#f6f5ff] drop-shadow">{stock.name}</h3>
               </div>
-              <div className="text-sm text-cyan-100">
-                Symbol: <span className="font-semibold text-white">{stock.symbol}</span>
+              <div className="text-sm text-[#d8dcff]">
+                Symbol: <span className="font-semibold text-[#f6f5ff]">{stock.symbol}</span>
               </div>
               <div className="mt-4">
                 <button 
-                  className="px-4 py-2 bg-amber-400 text-blue-950 rounded font-semibold hover:bg-amber-300 transition-colors"
+                  className="px-4 py-2 bg-[var(--accent)] text-[#1d0618] rounded font-semibold hover:bg-[#ff568c] transition-colors shadow-[0_0_20px_rgba(255,63,125,0.28)]"
                   onClick={(e) => {
                     e.stopPropagation()
                     handlePredictionRequest(stock.symbol)
@@ -173,43 +173,43 @@ export default function StockPredictions() {
       
       {loading && (
         <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-300 mx-auto mb-4"></div>
-          <p className="text-cyan-100">Loading prediction...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accent)] mx-auto mb-4"></div>
+          <p className="text-[#c8cdfd]">Loading prediction...</p>
         </div>
       )}
       
       {error && (
-        <div className="bg-rose-900/60 border border-rose-500 text-rose-100 p-4 rounded-lg mb-6">
+        <div className="bg-[#1a142e]/85 border border-[var(--accent)]/35 text-[var(--accent)] p-4 rounded-lg mb-6 shadow-[0_0_24px_rgba(64,55,255,0.22)]">
           {error}
         </div>
       )}
       
       {prediction && (
-        <div className="bg-indigo-900/80 border border-indigo-700 rounded-xl shadow-xl p-6 backdrop-blur">
-          <h2 className="text-2xl font-bold mb-4 text-amber-200">Prediction Results</h2>
-          <div className="mb-5 text-sm text-cyan-100">
-            <span className="text-cyan-200">Reference date:</span>{' '}
-            <span className="font-semibold text-amber-200">
+  <div className="bg-gradient-to-br from-[#0b0a1f] to-[#17143c] border border-[#222046] rounded-xl shadow-[0_0_32px_rgba(64,55,255,0.26)] p-6 backdrop-blur">
+          <h2 className="text-2xl font-bold mb-4 text-[#f1eeff] drop-shadow-[0_0_18px_rgba(123,91,255,0.28)]">Prediction Results</h2>
+          <div className="mb-5 text-sm text-[#c8cdfd]">
+            <span className="text-[var(--accent-secondary)]">Reference date:</span>{' '}
+            <span className="font-semibold text-[#f6f5ff]">
               {prediction.date
                 ? new Date(`${prediction.date}T00:00:00Z`).toLocaleDateString()
                 : new Date().toLocaleDateString()}
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-emerald-700/40 border border-emerald-400/60 p-4 rounded-lg">
-              <h3 className="text-lg font-medium text-emerald-200 mb-2">High</h3>
-              <p className="text-2xl font-bold text-emerald-100">${prediction.high.toFixed(2)}</p>
+            <div className="bg-gradient-to-br from-[#151436] via-[#202457] to-[#2b2f6c] border border-[var(--accent-secondary)]/30 p-4 rounded-lg shadow-[0_0_24px_rgba(64,55,255,0.24)]">
+              <h3 className="text-lg font-medium text-[var(--accent-secondary)] mb-2">High</h3>
+              <p className="text-2xl font-bold text-[#f6f5ff]">${prediction.high.toFixed(2)}</p>
             </div>
-            <div className="bg-cyan-700/40 border border-cyan-400/60 p-4 rounded-lg">
-              <h3 className="text-lg font-medium text-cyan-100 mb-2">Close</h3>
-              <p className="text-2xl font-bold text-cyan-50">${prediction.close.toFixed(2)}</p>
+            <div className="bg-gradient-to-br from-[#151436] via-[#24265a] to-[#313572] border border-[var(--accent-secondary)]/30 p-4 rounded-lg shadow-[0_0_24px_rgba(64,55,255,0.24)]">
+              <h3 className="text-lg font-medium text-[var(--accent-secondary)] mb-2">Close</h3>
+              <p className="text-2xl font-bold text-[#f6f5ff]">${prediction.close.toFixed(2)}</p>
             </div>
-            <div className="bg-rose-700/40 border border-rose-400/60 p-4 rounded-lg">
-              <h3 className="text-lg font-medium text-rose-100 mb-2">Low</h3>
-              <p className="text-2xl font-bold text-rose-50">${prediction.low.toFixed(2)}</p>
+            <div className="bg-gradient-to-br from-[#151436] via-[#292c60] to-[#383a78] border border-[var(--accent-secondary)]/30 p-4 rounded-lg shadow-[0_0_24px_rgba(64,55,255,0.24)]">
+              <h3 className="text-lg font-medium text-[var(--accent-secondary)] mb-2">Low</h3>
+              <p className="text-2xl font-bold text-[#f6f5ff]">${prediction.low.toFixed(2)}</p>
             </div>
           </div>
-          <div className="mt-6 text-sm text-cyan-100">
+          <div className="mt-6 text-sm text-[#c8cdfd]">
             <p>Prediction for {stocks.find(s => s.symbol === prediction.symbol)?.name || prediction.symbol}</p>
           </div>
         </div>

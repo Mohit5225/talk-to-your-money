@@ -36,7 +36,7 @@ export default function RootLayout({
           <Header />
 
           {/* Optional: keep SignIn/SignUp/UserButton if needed inside Header or separate */}
-          <main className="min-h-screen bg-gradient-to-br from-blue-950 via-indigo-950 to-purple-900 text-sky-50">
+          <main className="min-h-screen bg-gradient-to-br from-[#03030a] via-[#09031a] to-[#120624] text-[var(--foreground)]">
             {children}
           </main>
           

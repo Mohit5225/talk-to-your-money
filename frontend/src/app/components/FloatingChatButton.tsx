@@ -24,7 +24,7 @@ export default function FloatingChatButton() {
     <div className="fixed bottom-6 right-6 z-50">
       <Link href="/dashboard/chatbot">
         <button 
-          className="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-transform hover:scale-105 flex items-center gap-2"
+          className="bg-[var(--accent)] text-[#1a0515] p-4 rounded-full shadow-[0_0_22px_rgba(255,63,125,0.32)] hover:bg-[#ff568c] transition-transform hover:scale-105 flex items-center gap-2"
           aria-label="Open chatbot"
         >
           <MessageCircle size={24} />

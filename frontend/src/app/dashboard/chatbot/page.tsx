@@ -69,10 +69,10 @@ export default function ChatbotPage() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] bg-gradient-to-br from-blue-950 via-indigo-950 to-purple-900 text-sky-100">
-      <div className="bg-gradient-to-r from-indigo-800 via-blue-700 to-cyan-600 p-4 shadow-lg border-b border-cyan-400/60">
-        <h1 className="text-xl font-semibold text-white drop-shadow">Talk to Your Money Assistant</h1>
-        <p className="text-cyan-100 text-sm">Ask questions about finances, investments, or get stock predictions</p>
+    <div className="flex flex-col h-[calc(100vh-64px)] bg-gradient-to-br from-[#04040d] via-[#0b0c20] to-[#151237] text-[var(--foreground)]">
+      <div className="bg-gradient-to-r from-[#090b1d] via-[#12153a] to-[#1c1e4f] p-4 shadow-lg border-b border-[var(--accent-secondary)]/30">
+        <h1 className="text-xl font-semibold text-[#f6f5ff] drop-shadow-[0_0_16px_rgba(123,91,255,0.28)]">Talk to Your Money Assistant</h1>
+        <p className="text-[#c8cdfd] text-sm">Ask questions about finances, investments, or get stock predictions</p>
       </div>
       
       <div className={`flex-grow overflow-y-auto p-4 ${styles.chatContainer}`}>
@@ -83,22 +83,22 @@ export default function ChatbotPage() {
               className={`mb-4 ${message.sender === 'user' ? 'flex justify-end' : 'flex justify-start'} ${styles.messageIn}`}
             >
               {message.sender === 'bot' && (
-                <div className="flex-shrink-0 h-8 w-8 rounded-full bg-cyan-500/30 flex items-center justify-center mr-2 border border-cyan-300/60">
-                  <Bot size={18} className="text-cyan-100" />
+                <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[var(--accent-secondary)]/20 flex items-center justify-center mr-2 border border-[var(--accent-secondary)]/35">
+                  <Bot size={18} className="text-[var(--accent-secondary)]" />
                 </div>
               )}
               
               <div 
                 className={`p-3 rounded-lg max-w-[80%] ${styles.messageIn} ${
                   message.sender === 'user' 
-                    ? 'bg-amber-400 text-blue-950 rounded-br-none' 
-                    : 'bg-indigo-900/80 text-sky-100 shadow-xl border border-indigo-600/60 rounded-bl-none'
+                    ? 'bg-[var(--accent)] text-[#1c0619] rounded-br-none' 
+                    : 'bg-[#101432]/80 text-[var(--foreground)] shadow-xl border border-[var(--accent-secondary)]/25 rounded-bl-none'
                 }`}
               >
                 <p className="whitespace-pre-wrap">{message.text}</p>
                 <div 
                   className={`text-xs mt-1 flex items-center ${
-                    message.sender === 'user' ? 'text-blue-900/80' : 'text-cyan-200'
+                    message.sender === 'user' ? 'text-[#37122c]' : 'text-[var(--accent-secondary)]'
                   }`}
                 >
                   {message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -106,8 +106,8 @@ export default function ChatbotPage() {
               </div>
               
               {message.sender === 'user' && (
-                <div className="flex-shrink-0 h-8 w-8 rounded-full bg-amber-400 flex items-center justify-center ml-2 border border-amber-200/80">
-                  <User size={18} className="text-blue-950" />
+                <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[var(--accent)] flex items-center justify-center ml-2 border border-[#ff5c8f]/60">
+                  <User size={18} className="text-[#190612]" />
                 </div>
               )}
             </div>
@@ -115,14 +115,14 @@ export default function ChatbotPage() {
           
           {isLoading && (
             <div className="flex justify-start mb-4">
-              <div className="flex-shrink-0 h-8 w-8 rounded-full bg-cyan-500/30 flex items-center justify-center mr-2 border border-cyan-300/60">
-                <Bot size={18} className="text-cyan-100" />
+              <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[var(--accent-secondary)]/20 flex items-center justify-center mr-2 border border-[var(--accent-secondary)]/35">
+                <Bot size={18} className="text-[var(--accent-secondary)]" />
               </div>
-              <div className="bg-indigo-900/80 border border-indigo-600/60 p-3 rounded-lg shadow-xl rounded-bl-none">
+              <div className="bg-[#101432]/80 border border-[var(--accent-secondary)]/25 p-3 rounded-lg shadow-xl rounded-bl-none">
                 <div className="flex space-x-2">
-                  <div className={`h-2 w-2 bg-blue-400 rounded-full ${styles.typingDot}`}></div>
-                  <div className={`h-2 w-2 bg-blue-400 rounded-full ${styles.typingDot}`}></div>
-                  <div className={`h-2 w-2 bg-blue-400 rounded-full ${styles.typingDot}`}></div>
+                  <div className={`h-2 w-2 bg-[var(--accent)] rounded-full ${styles.typingDot}`}></div>
+                  <div className={`h-2 w-2 bg-[var(--accent)] rounded-full ${styles.typingDot}`}></div>
+                  <div className={`h-2 w-2 bg-[var(--accent)] rounded-full ${styles.typingDot}`}></div>
                 </div>
               </div>
             </div>
@@ -132,7 +132,7 @@ export default function ChatbotPage() {
         </div>
       </div>
       
-      <div className="p-4 border-t border-indigo-700 bg-indigo-950/90">
+      <div className="p-4 border-t border-[#232046] bg-[#090b20]/90">
         <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto">
           <div className="flex items-center gap-2">
             <input
@@ -140,21 +140,21 @@ export default function ChatbotPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask a question about your finances..."
-              className="flex-grow border border-cyan-500/60 rounded-full px-4 py-3 bg-indigo-900/60 text-sky-100 placeholder-sky-300 focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-lg"
+              className="flex-grow border border-[var(--accent-secondary)]/35 rounded-full px-4 py-3 bg-[#111533]/70 text-[var(--foreground)] placeholder-[#c8cdfd]/80 focus:outline-none focus:ring-2 focus:ring-[var(--accent-secondary)] shadow-[0_0_22px_rgba(64,55,255,0.24)]"
               disabled={isLoading}
               onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage(e)}
               autoFocus
             />
             <button 
               type="submit" 
-              className="bg-amber-400 text-blue-950 p-3 rounded-full hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-200 disabled:bg-amber-200 shadow-lg transition-colors font-semibold"
+              className="bg-[var(--accent)] text-[#1d0618] p-3 rounded-full hover:bg-[#ff568c] focus:outline-none focus:ring-2 focus:ring-[var(--accent-secondary)]/70 disabled:bg-[var(--accent)]/50 shadow-[0_0_24px_rgba(255,63,125,0.28)] transition-colors font-semibold"
               disabled={isLoading || !input.trim()}
               aria-label="Send message"
             >
               <Send size={20} />
             </button>
           </div>
-          <p className="text-xs text-cyan-200 mt-2 text-center">Ask about finances, investments, or get stock predictions</p>
+          <p className="text-xs text-[#c8cdfd] mt-2 text-center">Ask about finances, investments, or get stock predictions</p>
         </form>
       </div>
     </div>

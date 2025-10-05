@@ -9,11 +9,11 @@ export default function Header() {
   const pathname = usePathname();
   
   return (
-    <header className="bg-gradient-to-r from-blue-950 via-indigo-900 to-purple-900 shadow-lg border-b border-indigo-700">
+    <header className="bg-gradient-to-r from-[#050510] via-[#0e0820] to-[#170c2c] shadow-lg border-b border-[#231544]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 text-sky-100">
+        <div className="flex justify-between items-center h-16 text-[var(--foreground)]">
           <div className="flex items-center">
-            <Link href="/" className="font-bold text-xl text-amber-300 drop-shadow">
+            <Link href="/" className="font-bold text-xl text-[#f8f9ff] drop-shadow-[0_0_12px_rgba(123,91,255,0.35)]">
               Talk To Your Money
             </Link>
             <nav className="ml-10 flex space-x-8">
@@ -22,8 +22,8 @@ export default function Header() {
                   href="/dashboard" 
                   className={`${
                     pathname?.startsWith('/dashboard') && !pathname?.startsWith('/dashboard/chatbot')
-                      ? 'text-amber-300 border-b-2 border-amber-300'
-                      : 'text-cyan-200/80 hover:text-cyan-100'
+                      ? 'text-[var(--accent)] border-b-2 border-[var(--accent)]'
+                      : 'text-[#b8beff]/70 hover:text-[#f5f6ff]'
                   } px-1 pt-1 text-sm font-semibold transition-colors`}
                 >
                   Dashboard
@@ -32,8 +32,8 @@ export default function Header() {
                   href="/profile" 
                   className={`${
                     pathname?.startsWith('/profile')
-                      ? 'text-amber-300 border-b-2 border-amber-300'
-                      : 'text-cyan-200/80 hover:text-cyan-100'
+                      ? 'text-[var(--accent)] border-b-2 border-[var(--accent)]'
+                      : 'text-[#b8beff]/70 hover:text-[#f5f6ff]'
                   } px-1 pt-1 text-sm font-semibold transition-colors`}
                 >
                   Profile
@@ -42,8 +42,8 @@ export default function Header() {
                   href="/dashboard/chatbot" 
                   className={`${
                     pathname?.startsWith('/dashboard/chatbot')
-                      ? 'text-amber-300 border-b-2 border-amber-300'
-                      : 'text-cyan-200/80 hover:text-cyan-100'
+                      ? 'text-[var(--accent)] border-b-2 border-[var(--accent)]'
+                      : 'text-[#b8beff]/70 hover:text-[#f5f6ff]'
                   } px-1 pt-1 text-sm font-semibold flex items-center gap-1 transition-colors`}
                 >
                   <MessageCircle size={16} />
@@ -56,23 +56,23 @@ export default function Header() {
           <div className="flex items-center gap-4">
             <SignedOut>
               <SignInButton mode="modal">
-                <button className="text-cyan-100 hover:text-amber-200 transition-colors font-semibold">
+                <button className="text-[#e7eaff] hover:text-[var(--accent)] transition-colors font-semibold">
                   Sign In
                 </button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button className="bg-amber-400 text-blue-950 rounded-full font-semibold text-sm h-10 px-4 hover:bg-amber-300 transition-colors">
+                <button className="bg-[var(--accent)] text-[#140512] rounded-full font-semibold text-sm h-10 px-4 hover:bg-[#ff568c] transition-colors">
                   Sign Up
                 </button>
               </SignUpButton>
             </SignedOut>
             <SignedIn>
               <Link href="/dashboard/chatbot">
-                <button className="p-2 rounded-full bg-cyan-500/20 text-cyan-100 hover:bg-cyan-500/30 transition-colors" aria-label="Open Chatbot">
+                <button className="p-2 rounded-full bg-[var(--accent)]/20 text-[var(--accent)] hover:bg-[var(--accent)]/30 transition-colors" aria-label="Open Chatbot">
                   <MessageCircle size={20} />
                 </button>
               </Link>
-              <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: 'ring-2 ring-amber-300' } }} />
+              <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: 'ring-2 ring-[var(--accent)]' } }} />
             </SignedIn>
           </div>
         </div>

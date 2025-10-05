@@ -29,9 +29,10 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+
 .chatContainer {
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  scrollbar-color: rgba(255, 63, 125, 0.3) transparent;
 }
 
 .chatContainer::-webkit-scrollbar {
@@ -43,6 +44,6 @@
 }
 
 .chatContainer::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 63, 125, 0.32);
   border-radius: 20px;
 }
