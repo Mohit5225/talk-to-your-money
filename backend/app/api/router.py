@@ -1,5 +1,9 @@
 # app/api/router.py
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Depends
+from fastapi import Request
+from auth.auth import get_current_user
+from mongo_db.db import get_database
+from .graph import build_agent_graph
 import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -124,3 +128,45 @@ async def get_prediction(symbol: str, date: Optional[str] = Query(default=None, 
         # Catch any other errors during fetching or prediction
         print(f"Error making prediction: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+
+
+
+
+@router.post("/chat")
+async def chat_endpoint(
+    payload: dict,
+    clerk_session: dict = Depends(get_current_user),
+    db = Depends(get_database),
+):
+    """
+    Simple chat endpoint that runs the LangGraph agent.
+    Expects JSON body: { "message": "I spent 500 on pizza" }
+    """
+    user_input = payload.get("message") or payload.get("text")
+    if not user_input or not user_input.strip():
+        raise HTTPException(status_code=400, detail="`message` is required")
+
+    # Ensure prediction service loaded (used by agent prediction node)
+    if not ml_models.get("stock_predictor"):
+        initialize_prediction_service()
+
+    agent = build_agent_graph()
+
+    initial_state = {
+        "user_input": user_input,
+        "prediction_service": ml_models.get("stock_predictor"),
+        "db_connection": db,
+        "user_id": clerk_session.get("sub"),
+        "intent": None,
+        "symbol": None,
+        "date_for_prediction": None,
+        "prediction_data": None,
+        "final_response": None
+    }
+
+    # Run the async agent
+    result_state = await agent.ainvoke(initial_state)
+
+    return result_state.get("final_response", {"type": "text", "content": "No response generated."})

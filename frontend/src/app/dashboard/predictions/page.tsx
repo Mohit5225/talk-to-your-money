@@ -107,7 +107,7 @@ export default function StockPredictions() {
       <div className="mb-6">
         <Link href="/dashboard" className="text-[var(--accent)] hover:text-[#ff5c8f] transition-colors flex items-center">
           ← Back to Dashboard
-        </Link>
+        </Link>                                                                                                                                                                         
       </div>
       
       <h1 className="text-3xl font-bold mb-6 text-[#f1eeff] drop-shadow-[0_0_18px_rgba(123,91,255,0.28)]">Stock Predictions</h1>

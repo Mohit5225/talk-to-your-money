@@ -7,7 +7,8 @@ from .nodes import (
     get_prediction_node,
     handle_portfolio_query_node,
     handle_general_query_node,
-    format_response_node
+    format_response_node,
+    handle_data_entry_node
 )
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,7 @@ def build_agent_graph():
     workflow.add_node("portfolio_query", handle_portfolio_query_node)
     workflow.add_node("general_query", handle_general_query_node)
     workflow.add_node("format_final_response", format_response_node)
+    workflow.add_node("data_entry", handle_data_entry_node)
 
     # Step 2: Define the starting point of every conversation
     workflow.set_entry_point("parse_intent")
@@ -39,6 +41,8 @@ def build_agent_graph():
             return "predict_stock" if state.get("symbol") != "UNKNOWN" else "format_final_response"
         elif intent == "portfolio_query":
             return "portfolio_query"
+        elif intent == "data_entry":
+            return "data_entry"
         else: # This covers "general_query" and any other fallback.
             return "general_query"
 
@@ -50,12 +54,14 @@ def build_agent_graph():
             "predict_stock": "predict_stock",
             "portfolio_query": "portfolio_query",
             "general_query": "general_query",
-            "format_final_response": "format_final_response"
+            "format_final_response": "format_final_response",
+            "data_entry": "data_entry"
         }
     )
 
     # Step 5: Define the final connections
     workflow.add_edge("predict_stock", "format_final_response")
+    workflow.add_edge("data_entry", "format_final_response")
     
     # The placeholder nodes are dead-ends for now; they finish the conversation.
     workflow.add_edge("portfolio_query", END)

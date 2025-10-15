@@ -31,7 +31,8 @@ app.add_middleware(
 )
 
 app.include_router(auth_router, prefix="/api") # Prefixed with /api for good practice
-app.include_router(prediction_router) # No prefix, so routes will be at root (/predict/AAPL)
+# Expose the prediction/chat router under /api so frontend can call /api/chat
+app.include_router(prediction_router, prefix="/api")
 
 @app.get("/")
 async def root():
@@ -41,3 +42,5 @@ async def root():
 async def health_check():
     db_status = "connected" if database is not None else "disconnected"
     return {"status": "healthy", "database": db_status}
+
+

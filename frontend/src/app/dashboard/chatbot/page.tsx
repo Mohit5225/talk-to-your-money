@@ -28,6 +28,13 @@ export default function ChatbotPage() {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
+  
+  const formatTime = (timestamp: Date) => {
+    return new Date(timestamp).toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit'
+    });
+  }
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -101,7 +108,7 @@ export default function ChatbotPage() {
                     message.sender === 'user' ? 'text-[#37122c]' : 'text-[var(--accent-secondary)]'
                   }`}
                 >
-                  {message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                   {formatTime(message.timestamp)}
                 </div>
               </div>
               

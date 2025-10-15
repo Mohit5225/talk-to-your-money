@@ -3,7 +3,7 @@ import logging
 from .state import AgentState
 # We import the intelligent parser function we created previously
 from .intent_parser import parse_financial_intent
-
+from .data_entry_node import extract_financial_events
 logger = logging.getLogger(__name__)
 
 async def parse_intent_node(state: AgentState):
@@ -113,4 +113,45 @@ async def format_response_node(state: AgentState):
                 "content": "I wasn't able to get a prediction for that stock. It might not be one I track."
             }
 
+    return state
+
+
+
+# in nodes.py
+async def handle_data_entry_node(state: AgentState):
+    """Process financial data entry and save to database"""
+    logger.info("--- NODE: Processing Data Entry ---")
+    user_input = state["user_input"]
+    db = state["db_connection"]
+    user_id = state["user_id"]
+
+    # Extract structured data
+    extracted_events = await extract_financial_events(user_input)
+    
+    if not extracted_events:
+        state["final_response"] = {
+            "type": "text",
+            "content": "I couldn't extract any financial data from your message."
+        }
+        return state
+        
+    try:
+        # Save extracted data to database
+        await save_financial_events(db, user_id, extracted_events)
+        
+        # Prepare summary for response
+        categories = set(event["payload"]["category"] for event in extracted_events 
+                        if "payload" in event and "category" in event["payload"])
+        
+        state["final_response"] = {
+            "type": "text",
+            "content": f"I've recorded {len(extracted_events)} financial entries in these categories: {', '.join(categories)}."
+        }
+    except Exception as e:
+        logger.error(f"Error saving financial events: {e}")
+        state["final_response"] = {
+            "type": "text",
+            "content": "I had trouble saving your financial data. Please try again later."
+        }
+    
     return state

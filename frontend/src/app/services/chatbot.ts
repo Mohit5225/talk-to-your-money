@@ -8,23 +8,40 @@ export interface ChatMessage {
 
 export async function sendMessage(message: string): Promise<ChatMessage> {
   try {
-    // This is where you'll integrate with your backend API
-    // For now, we'll simulate a response
-    
-    // In production, replace with actual API call:
-    // const response = await fetch('/api/chat', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ message })
-    // });
-    // const data = await response.json();
-    
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    // Call backend chat API. The backend router is exposed under /api/chat
+    const res = await fetch('http://localhost:8000/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      // include credentials so Clerk session cookie is sent
+      credentials: 'include',
+      // send the user's message in a simple payload
+      body: JSON.stringify({ message })
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error('Chat API error:', res.status, text);
+      throw new Error('Chat API returned ' + res.status);
+    }
+
+    // Parse JSON safely
+    let data: any = null;
+    try {
+      data = await res.json();
+    } catch (e) {
+      const text = await res.text();
+      console.warn('Chat API returned non-JSON response:', text);
+      data = { content: text };
+    }
+
+    // Expecting backend to return { type: 'text', content: '...' } or similar
+    const botText = (data && data.content) ? data.content : (data.message || JSON.stringify(data));
+
     return {
       id: Date.now().toString(),
-      text: `Thanks for your message! This is a placeholder response. Eventually, I'll connect to the backend API to process: "${message}"`,
+      text: botText,
       sender: 'bot',
       timestamp: new Date()
     };

@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Dict, Any
 
  
-from calling_gemini import get_gemini_response_async
+from .calling_gemini import get_gemini_response_async
 
 logger = logging.getLogger(__name__)
 
@@ -26,56 +26,8 @@ Categorize the user's request into ONE of the following intents:
 - **prediction_request**: The user is asking for a future stock price prediction.
 - **portfolio_query**: The user is asking a question about their personal investments, holdings, or portfolio performance.
 - **general_query**: The user is asking a general financial question or a question that doesn't fit the other categories.
+- **data_entry**: The user is providing financial data to be recorded if user tells you where did he spent its money or where did he get its money classify it as data_entry.
 
-**--- Step 2: Extract Entities for "prediction_request" ---**
-If, and only if, the intent is `prediction_request`, you MUST extract the following entities:
-
-**1. Ticker:**
-   - The user will provide a company name. You MUST map it to its official stock ticker using this table.
-   - If the name is not on this list, do not guess. Set the ticker to "UNKNOWN".
-
-   **Ticker Lookup Table:**
-   - "apple": "AAPL"
-   - "tesla": "TSLA"
-   - "microsoft": "MSFT"
-   - "nvidia": "NVDA"
-   - "google": "GOOGL"
-   - "alphabet": "GOOGL"
-   - "amd": "AMD"
-   - "meta": "META"
-   - "facebook": "META"
-
-**2. Date:**
-   - Find the date the user is asking about.
-   - You MUST format it as **YYYY-MM-DD**.
-   - **If the user does not specify a date or says "today" or "tomorrow", use today's date which is: {current_date}**
-
-**--- Step 3: Format Your Response ---**
-You MUST respond with ONLY a valid JSON object. Do not add any conversational text, explanations, or markdown formatting like ```json.
-
-**Example for a prediction request:**
-User Input: "what do you think apple stock will do tomorrow"
-Your Response:
-{{
-    "intent": "prediction_request",
-    "entities": {{
-        "ticker": "AAPL",
-        "date": "{current_date}"
-    }}
-}}
-
-**Example for a portfolio query:**
-User Input: "how are my investments doing?"
-Your Response:
-{{
-    "intent": "portfolio_query",
-    "entities": null
-}}
-
-**--- User's Message to Analyze ---**
-User Input: "{user_input}"
-
-Your JSON Response:
 """
 
 async def parse_financial_intent(user_input: str) -> Dict[str, Any]:
