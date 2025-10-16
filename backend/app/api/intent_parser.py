@@ -8,26 +8,28 @@ from .calling_gemini import get_gemini_response_async
 
 logger = logging.getLogger(__name__)
 
-# --- The Finalized Prompt Template ---
 INTENT_PARSING_PROMPT_TEMPLATE = """
-```json
-{
-    "user_input": "{user_input}",
-    "current_date": "{current_date}"
-}
-You are an expert intent and entity extraction system for a Financial AI Agent.
-Your task is to analyze the user's message and extract three key pieces of information:
-1.  The user's intent.
-2.  The stock ticker they are interested in.
-3.  The date they are asking about.
+## ROLE & GOAL
+You are an expert intent and entity extraction system for a Financial AI Agent. Your task is to analyze the user's message and the current date to extract the user's intent and any relevant entities.
 
-**--- Step 1: Classify the Intent ---**
-Categorize the user's request into ONE of the following intents:
-- **prediction_request**: The user is asking for a future stock price prediction.
-- **portfolio_query**: The user is asking a question about their personal investments, holdings, or portfolio performance.
-- **general_query**: The user is asking a general financial question or a question that doesn't fit the other categories.
-- **data_entry**: The user is providing financial data to be recorded if user tells you where did he spent its money or where did he get its money classify it as data_entry.
+## INSTRUCTIONS
+1.  **Classify Intent**: Categorize the user's request into ONE of the following:
+    - `prediction_request`: User wants a future stock price.
+    - `portfolio_query`: User is asking about their personal investments.
+    - `general_query`: A general financial question.
+    - `data_entry`: User is providing financial data to be recorded (e.g., "I spent $50 on food").
 
+2.  **Extract Entities**: Identify the following from the user's message:
+    - `ticker`: The stock symbol (e.g., "AAPL", "MSFT", "TSLA"). If none, use `null`.
+    - `date`: The specific date the user is asking about in YYYY-MM-DD format. If they say "tomorrow", calculate it based on the `current_date`. If no specific date is mentioned, use `null`.
+
+3.  **Output Format**: Respond with NOTHING but a single, clean JSON object. Do not add any conversational text, explanations, or markdown formatting like ```json.
+
+## DATA
+- **User Input**: "{user_input}"
+- **Current Date**: "{current_date}"
+
+## YOUR JSON OUTPUT
 """
 
 async def parse_financial_intent(user_input: str) -> Dict[str, Any]:

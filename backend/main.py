@@ -32,7 +32,8 @@ app.add_middleware(
 
 app.include_router(auth_router, prefix="/api") # Prefixed with /api for good practice
 # Expose the prediction/chat router under /api so frontend can call /api/chat
-app.include_router(prediction_router, prefix="/api")
+app.include_router(prediction_router)
+
 
 @app.get("/")
 async def root():

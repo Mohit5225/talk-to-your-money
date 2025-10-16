@@ -141,24 +141,40 @@ async def chat_endpoint(
     db = Depends(get_database),
 ):
     """
-    Simple chat endpoint that runs the LangGraph agent.
-    Expects JSON body: { "message": "I spent 500 on pizza" }
+    Chat endpoint that runs the LangGraph agent and stores conversation messages.
+    Expects JSON body: { "message": "..." }
     """
     user_input = payload.get("message") or payload.get("text")
     if not user_input or not user_input.strip():
         raise HTTPException(status_code=400, detail="`message` is required")
 
+    user_id = clerk_session.get("sub")
+    
+    logger.info("=" * 100)
+    logger.info(f"🌐 [CHAT_ENDPOINT] New chat request from user: {user_id[:8]}...")
+    logger.info(f"💬 [CHAT_ENDPOINT] User message: '{user_input}'")
+    
+    # Save user message to database
+    from mongo_db.message_storage import save_conversation_message
+    try:
+        user_msg_id = await save_conversation_message(db, user_id, "user", user_input)
+        logger.info(f"✅ [CHAT_ENDPOINT] User message saved with ID: {user_msg_id}")
+    except Exception as e:
+        logger.error(f"❌ [CHAT_ENDPOINT] Failed to save user message: {e}")
+
     # Ensure prediction service loaded (used by agent prediction node)
     if not ml_models.get("stock_predictor"):
+        logger.info("🔄 [CHAT_ENDPOINT] Initializing prediction service...")
         initialize_prediction_service()
 
+    logger.info("🤖 [CHAT_ENDPOINT] Building agent graph...")
     agent = build_agent_graph()
 
     initial_state = {
         "user_input": user_input,
         "prediction_service": ml_models.get("stock_predictor"),
         "db_connection": db,
-        "user_id": clerk_session.get("sub"),
+        "user_id": user_id,
         "intent": None,
         "symbol": None,
         "date_for_prediction": None,
@@ -167,6 +183,31 @@ async def chat_endpoint(
     }
 
     # Run the async agent
+    logger.info("🚀 [CHAT_ENDPOINT] Invoking LangGraph agent...")
     result_state = await agent.ainvoke(initial_state)
+    logger.info("✅ [CHAT_ENDPOINT] Agent execution completed")
+    
+    bot_response = result_state.get("final_response", {"type": "text", "content": "No response generated."})
+    bot_content = bot_response.get("content", "No response")
+    
+    logger.info(f"📤 [CHAT_ENDPOINT] Bot response: '{bot_content[:100]}...'")
+    
+    # Save assistant message to database with metadata
+    try:
+        assistant_msg_id = await save_conversation_message(
+            db, 
+            user_id, 
+            "assistant", 
+            bot_content,
+            metadata={
+                "intent": result_state.get("intent"),
+                "symbol": result_state.get("symbol"),
+                "date": result_state.get("date_for_prediction")
+            }
+        )
+        logger.info(f"✅ [CHAT_ENDPOINT] Assistant message saved with ID: {assistant_msg_id}")
+    except Exception as e:
+        logger.error(f"❌ [CHAT_ENDPOINT] Failed to save assistant message: {e}")
 
-    return result_state.get("final_response", {"type": "text", "content": "No response generated."})
+    logger.info("=" * 100)
+    return bot_response

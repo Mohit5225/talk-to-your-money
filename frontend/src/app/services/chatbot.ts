@@ -6,20 +6,22 @@ export interface ChatMessage {
   timestamp: Date;
 }
 
-export async function sendMessage(message: string): Promise<ChatMessage> {
+export async function sendMessage(message: string, token?: string): Promise<ChatMessage> {
   try {
-    // Call backend chat API. The backend router is exposed under /api/chat
-    const res = await fetch('http://localhost:8000/api/chat', {
+    // build headers, including Clerk JWT if provided
+    const headers: Record<string,string> = {
+      'Content-Type': 'application/json'
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const res = await fetch('http://localhost:8000/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      // include credentials so Clerk session cookie is sent
+      headers,
       credentials: 'include',
-      // send the user's message in a simple payload
       body: JSON.stringify({ message })
     });
-
     if (!res.ok) {
       const text = await res.text();
       console.error('Chat API error:', res.status, text);

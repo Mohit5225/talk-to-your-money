@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 genai.configure(api_key=GOOGLE_API_KEY)
 
 async def get_gemini_response_async(prompt: str) -> str:
-    LLM_MODEL_NAME = "gemini-1.5-flash"
+    LLM_MODEL_NAME = "gemini-2.0-flash"
     if not GOOGLE_API_KEY or "YOUR_KEY" in GOOGLE_API_KEY:
         logger.error("Invalid API key configuration")
         return None

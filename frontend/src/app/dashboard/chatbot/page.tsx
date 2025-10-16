@@ -4,10 +4,12 @@ import { useState, useRef, useEffect } from 'react'
 import { Send, Bot, User } from 'lucide-react'
 import styles from './chatbot.module.css'
 import { sendMessage, ChatMessage } from '@/app/services/chatbot'
+import { useAuth } from '@clerk/nextjs'
 
 // Using ChatMessage type from our service
 
 export default function ChatbotPage() {
+  const { getToken, isSignedIn } = useAuth();
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -56,8 +58,11 @@ export default function ChatbotPage() {
     
     // Send request to backend
     try {
+      // Get a Clerk session token for the backend API
+      const template = process.env.NEXT_PUBLIC_CLERK_JWT_TEMPLATE;
+      const token = isSignedIn ? await getToken(template ? { template } : {}) : undefined;
       // Call our service function
-      const botResponse = await sendMessage(userInput)
+      const botResponse = await sendMessage(userInput, token || undefined)
       setMessages(prev => [...prev, botResponse])
     } catch (error) {
       console.error('Error sending message:', error)
