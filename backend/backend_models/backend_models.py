@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Dict, Optional, List, Any
 from enum import Enum
 from bson import ObjectId
 
@@ -33,6 +33,7 @@ class Transaction(BaseModel):
     amount: float
     category: str
     type: str
+    metadata: Optional[Dict[str, Any]] = None
 
     class Config(BaseModelConfig):
         pass
