@@ -80,6 +80,4 @@ AI-powered financial insights and stock predictions platform.
    ```
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 📄 License
-
-This project is licensed under the MIT License.
+ 
